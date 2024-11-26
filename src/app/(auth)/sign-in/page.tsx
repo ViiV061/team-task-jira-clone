@@ -1,11 +1,16 @@
-"use client";
+import { redirect } from "next/navigation";
 
+import { getCurrent } from "@/features/auth/actions";
 import SignInCard from "@/features/auth/components/sign-in-card";
-const SignInPage = () => {
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <SignInCard />
-    </div>
-  );
+
+const SignInPage = async () => {
+  const user = await getCurrent();
+
+  // console.log({ user });
+
+  if (user) {
+    redirect("/");
+  }
+  return <SignInCard />;
 };
 export default SignInPage;

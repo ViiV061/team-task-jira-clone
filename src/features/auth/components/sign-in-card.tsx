@@ -1,3 +1,5 @@
+"use client";
+
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import { useForm } from "react-hook-form";
@@ -20,7 +22,7 @@ import { loginSchehma } from "@/features/auth/schemas";
 import { useLogin } from "@/features/auth/api/use-login";
 
 const SignInCard = () => {
-  const { mutate } = useLogin();
+  const { mutate, isPending } = useLogin();
 
   const form = useForm<z.infer<typeof loginSchehma>>({
     resolver: zodResolver(loginSchehma),
@@ -53,6 +55,7 @@ const SignInCard = () => {
                     <FormControl>
                       <Input
                         {...field}
+                        disabled={isPending}
                         type="email"
                         placeholder="Enter Email address"
                       />
@@ -81,7 +84,7 @@ const SignInCard = () => {
               )}
             />
 
-            <Button disabled={false} size="lg" className="w-full">
+            <Button disabled={isPending} size="lg" className="w-full">
               Login
             </Button>
           </form>
@@ -95,7 +98,7 @@ const SignInCard = () => {
           variant={"outline"}
           size={"lg"}
           className="w-full"
-          disabled={false}
+          disabled={isPending}
         >
           <FcGoogle className="mr-2 size-5" />
           Login with Google
@@ -104,7 +107,7 @@ const SignInCard = () => {
           variant={"outline"}
           size={"lg"}
           className="w-full"
-          disabled={false}
+          disabled={isPending}
         >
           <FaGithub className="mr-2 size-5" />
           Login with Github
