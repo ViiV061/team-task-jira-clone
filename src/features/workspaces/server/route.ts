@@ -18,19 +18,34 @@ const app = new Hono().post(
     if (!user || !user.$id) {
       return c.json({ error: "User not found" }, 400);
     }
+    if (!DATABASE_ID || !WORKSPACE_ID) {
+      return c.json({ error: "Missing Database or Workspace ID" }, 500);
+    }
+    // console.log("DATABASE_ID:", DATABASE_ID);
+    // console.log("WORKSPACE_ID:", WORKSPACE_ID);
 
     const { name } = c.req.valid("json");
 
-    const workspace = await databases.createDocument(
-      DATABASE_ID,
-      WORKSPACE_ID,
-      ID.unique(),
-      {
-        name,
-        userId: user.$id,
-      }
-    );
-    return c.json({ data: workspace });
+    try {
+      const workspace = await databases.createDocument(
+        DATABASE_ID,
+        WORKSPACE_ID,
+        ID.unique(),
+        {
+          name,
+          userId: user.$id,
+        }
+      );
+      return c.json({ data: workspace });
+    } catch (error) {
+      console.error("Error creating workspace:", error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      return c.json(
+        { error: "Failed to create workspace", details: errorMessage },
+        500
+      );
+    }
   }
 );
 
